@@ -8,11 +8,9 @@ const App = () => {
   return (
     <Router>
       <div className="App">
-        <Container>
-          <Switch>
-            <Route exact path="/" component={ContactForm} />
-          </Switch>
-        </Container>
+        <Switch>
+          <Route exact path="/" component={ContactForm} />
+        </Switch>
       </div>
     </Router>
   );
