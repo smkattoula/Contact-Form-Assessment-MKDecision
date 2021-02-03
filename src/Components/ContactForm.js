@@ -5,26 +5,49 @@ import {
   Typography,
   Button,
   TextField,
+  Modal,
+  Backdrop,
+  Fade,
   makeStyles,
 } from "@material-ui/core";
 
 const ContactForm = () => {
-  const [user, setUser] = useState({
-    name: "",
-    email: "",
-    message: "",
-  });
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [message, setMessage] = useState("");
 
-  const handleChange = (e) => {
-    setUser({ ...user, [e.target.name]: e.target.value });
+  const [open, setOpen] = useState(false);
+
+  const handleOpen = () => {
+    if (name === "" || email === "" || message === "") {
+      return null;
+    } else {
+      setOpen(true);
+    }
   };
 
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const clearFields = () => {
+    setName("");
+    setEmail("");
+    setMessage("");
+  };
+
+  const onSubmit = (e) => {
+    e.preventDefault();
+    console.log(name, email, message);
+    clearFields();
+    handleClose();
+  };
   const classes = useStyles();
 
   return (
     <Container>
       <Paper elevation={10} className={classes.paperStyle}>
-        <form className={classes.form}>
+        <form id="formId" className={classes.form} onSubmit={onSubmit}>
           <Typography
             className={classes.typography}
             component="h1"
@@ -35,7 +58,8 @@ const ContactForm = () => {
           </Typography>
           <TextField
             className={classes.textField}
-            onChange={handleChange}
+            onChange={(e) => setName(e.target.value)}
+            value={name}
             variant="outlined"
             margin="normal"
             required
@@ -48,7 +72,8 @@ const ContactForm = () => {
           />
           <TextField
             className={classes.textField}
-            onChange={handleChange}
+            onChange={(e) => setEmail(e.target.value)}
+            value={email}
             variant="outlined"
             margin="normal"
             required
@@ -61,7 +86,8 @@ const ContactForm = () => {
           />
           <TextField
             className={classes.textField}
-            onChange={handleChange}
+            onChange={(e) => setMessage(e.target.value)}
+            value={message}
             variant="outlined"
             margin="normal"
             required
@@ -74,20 +100,54 @@ const ContactForm = () => {
           />
           <Button
             className={classes.button}
-            type="submit"
+            onClick={handleOpen}
+            type="button"
             fullWidth
             variant="contained"
             color="primary"
           >
             Submit
           </Button>
+          <Modal
+            aria-labelledby="transition-modal-title"
+            className={classes.modal}
+            open={open}
+            closeAfterTransition
+            onClose={handleClose}
+            BackdropComponent={Backdrop}
+            BackdropProps={{
+              timeout: 500,
+            }}
+          >
+            <Fade in={open}>
+              <div className={classes.modalPaper}>
+                <h2 id="transition-modal-title">Are you sure?</h2>
+                <Button
+                  type="submit"
+                  form="formId"
+                  variant="contained"
+                  color="primary"
+                >
+                  Yes
+                </Button>{" "}
+                <Button
+                  type="button"
+                  onClick={handleClose}
+                  variant="contained"
+                  color="secondary"
+                >
+                  No
+                </Button>
+              </div>
+            </Fade>
+          </Modal>
         </form>
       </Paper>
     </Container>
   );
 };
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   paperStyle: {
     paddingTop: "30px",
     height: "45rem",
@@ -106,6 +166,17 @@ const useStyles = makeStyles(() => ({
   button: {
     padding: "10px",
     marginTop: "5px",
+  },
+  modal: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  modalPaper: {
+    backgroundColor: theme.palette.background.paper,
+    border: "2px solid #000",
+    boxShadow: theme.shadows[5],
+    padding: theme.spacing(2, 4, 3),
   },
 }));
 
