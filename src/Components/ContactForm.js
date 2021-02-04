@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import {
   Container,
   Paper,
@@ -15,8 +16,27 @@ const ContactForm = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
-
   const [open, setOpen] = useState(false);
+
+  const api =
+    "https://rnlgghyao7.execute-api.us-east-2.amazonaws.com/dev/email/send";
+
+  const data = {
+    name: `${name}`,
+    email: `${email}`,
+    content: `${message}`,
+  };
+
+  const sendEmail = () => {
+    axios
+      .post(api, data)
+      .then((res) => {
+        console.log("Email sent successfully!");
+      })
+      .catch((error) => {
+        console.log("Error");
+      });
+  };
 
   const handleOpen = () => {
     if (name === "" || email === "" || message === "") {
@@ -38,7 +58,7 @@ const ContactForm = () => {
 
   const onSubmit = (e) => {
     e.preventDefault();
-    console.log(name, email, message);
+    sendEmail(name, email, message);
     clearFields();
     handleClose();
   };
